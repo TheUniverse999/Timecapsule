@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>写给未来的我 - 云支时间胶囊</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(ellipse at center, #0f2027, #203a43, #2c5364);
+      color: white;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin: 1rem 0 0.5rem;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      resize: none;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 10px;
+      background-color: #00ffff;
+      color: #000;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #00d0d0;
+    }
+
+    .logo {
+      width: 200px;
+      margin: 0 auto 1.5rem;
+      display: block;
+    }
+
+    .message-confirm {
+      margin-top: 2rem;
+      font-size: 1rem;
+      text-align: center;
+      color: #00ffff;
+    }
+
+    #qrcode {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <img src="logo.png" alt="云支 Logo" class="logo" />
+    <h1>写给未来的我</h1>
+    <label for="name">你的名字</label>
+    <input type="text" id="name" placeholder="请输入姓名" />
+
+    <label for="message">留言内容</label>
+    <textarea id="message" rows="5" placeholder="写下你想对未来的自己说的话..."></textarea>
+
+    <button onclick="submitMessage()">提交留言</button>
+    <div class="message-confirm" id="confirmation"></div>
+  </div>
+
+  <div id="qrcode"></div>
+
+  <script>
+    function submitMessage() {
+      const name = document.getElementById("name").value.trim();
+      const message = document.getElementById("message").value.trim();
+      const confirmBox = document.getElementById("confirmation");
+
+      if (!name || !message) {
+        confirmBox.textContent = "请填写完整信息后再提交。";
+        confirmBox.style.color = "#ff6666";
+        return;
+      }
+
+      confirmBox.textContent = `感谢你的留言，${name}！未来的你会收到的。`;
+      confirmBox.style.color = "#00ffff";
+
+      document.getElementById("name").value = "";
+      document.getElementById("message").value = "";
+    }
+
+    const qrUrl = "https://TheUniverse999.github.io/Timecapsule/";
+    new QRCode(document.getElementById("qrcode"), {
+      text: qrUrl,
+      width: 160,
+      height: 160,
+      colorDark: "#00ffff",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  </script>
+</body>
+</html>
