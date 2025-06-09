@@ -5,29 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>写给未来的我 - 云支时间胶囊</title>
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      background: radial-gradient(ellipse at center, #0f2027, #203a43, #2c5364);
-      color: white;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
       overflow: hidden;
+      background-color: #1a0000;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+    }
+
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100vw;
+      height: 100vh;
     }
 
     .container {
+      position: relative;
+      z-index: 1;
       width: 90%;
       max-width: 500px;
+      margin: 0 auto;
+      margin-top: 5vh;
       padding: 2rem;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+      box-shadow: 0 0 20px rgba(255, 100, 100, 0.3);
     }
 
     h1 {
@@ -58,7 +66,7 @@
       padding: 0.8rem;
       border: none;
       border-radius: 10px;
-      background-color: #00ffff;
+      background-color: #ff4d4d;
       color: #000;
       font-weight: bold;
       font-size: 1rem;
@@ -67,7 +75,7 @@
     }
 
     button:hover {
-      background-color: #00d0d0;
+      background-color: #e60000;
     }
 
     .logo {
@@ -80,7 +88,7 @@
       margin-top: 2rem;
       font-size: 1rem;
       text-align: center;
-      color: #00ffff;
+      color: #ff6666;
     }
 
     #qrcode {
@@ -92,6 +100,7 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
+  <canvas id="bg-canvas"></canvas>
   <div class="container">
     <img src="logo.png" alt="云支 Logo" class="logo" />
     <h1>写给未来的我</h1>
@@ -115,12 +124,12 @@
 
       if (!name || !message) {
         confirmBox.textContent = "请填写完整信息后再提交。";
-        confirmBox.style.color = "#ff6666";
+        confirmBox.style.color = "#ffcccc";
         return;
       }
 
       confirmBox.textContent = `感谢你的留言，${name}！未来的你会收到的。`;
-      confirmBox.style.color = "#00ffff";
+      confirmBox.style.color = "#ff6666";
 
       document.getElementById("name").value = "";
       document.getElementById("message").value = "";
@@ -131,10 +140,44 @@
       text: qrUrl,
       width: 160,
       height: 160,
-      colorDark: "#00ffff",
+      colorDark: "#cc0000",
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H
     });
+
+    // 粒子背景动画
+    const canvas = document.getElementById("bg-canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const particles = [];
+
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2 + 1,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5
+      });
+    }
+
+    function animate() {
+      ctx.fillStyle = "rgba(26, 0, 0, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
   </script>
 </body>
 </html>
