@@ -8,34 +8,23 @@
     html, body {
       margin: 0;
       padding: 0;
-      overflow: hidden;
-      background-color: #1a0000;
+      
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       color: white;
     }
 
-    #bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
-      width: 100vw;
-      height: 100vh;
-    }
-
     .container {
-      position: relative;
-      z-index: 1;
       width: 90%;
       max-width: 500px;
-      margin: 0 auto;
-      margin-top: 5vh;
+      margin: 5vh auto 0;
       padding: 2rem;
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 20px;
       backdrop-filter: blur(10px);
-      box-shadow: 0 0 20px rgba(255, 100, 100, 0.3);
+      box-shadow: 0 0 30px rgba(255, 80, 80, 0.4);
+      position: relative;
+      z-index: 1;
     }
 
     h1 {
@@ -71,11 +60,12 @@
       font-weight: bold;
       font-size: 1rem;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: background-color 0.3s, transform 0.2s;
     }
 
     button:hover {
       background-color: #e60000;
+      transform: scale(1.03);
     }
 
     .logo {
@@ -96,10 +86,20 @@
       display: flex;
       justify-content: center;
     }
+
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
+  <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images.unsplash.com/photo-1581092919534-6c13b19574b9?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed; background-size: cover; z-index: -2;"></div>
   <canvas id="bg-canvas"></canvas>
   <div class="container">
     <img src="logo.png" alt="云支 Logo" class="logo" />
@@ -112,9 +112,8 @@
 
     <button onclick="submitMessage()">提交留言</button>
     <div class="message-confirm" id="confirmation"></div>
+    <div id="qrcode"></div>
   </div>
-
-  <div id="qrcode"></div>
 
   <script>
     function submitMessage() {
@@ -145,13 +144,13 @@
       correctLevel: QRCode.CorrectLevel.H
     });
 
-    // 粒子背景动画
+    // 背景粒子动画带连接线
     const canvas = document.getElementById("bg-canvas");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    const particles = [];
 
+    const particles = [];
     for (let i = 0; i < 100; i++) {
       particles.push({
         x: Math.random() * canvas.width,
@@ -162,10 +161,29 @@
       });
     }
 
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 80) {
+            ctx.strokeStyle = "rgba(255, 50, 50, 0.1)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
     function animate() {
-      ctx.fillStyle = "rgba(26, 0, 0, 0.2)";
+      ctx.fillStyle = "rgba(255, 230, 230, 0.05)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
+      drawConnections();
+      ctx.fillStyle = "rgba(255, 80, 80, 0.8)";
       particles.forEach(p => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
